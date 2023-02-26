@@ -9,19 +9,37 @@ Ogni blocco contiene
 Per inserire un nuovo blocco avviene mining: trovo un hash fino a quando questo non soddisfa una specifica condizione (es. inizia con tot zeri)
 Per minare devo cambiare il nonce, che è un numero
 
+class Block {
+        constructor (hash, previousHash, timeStamp, nonce, data) {
+            this.hash = hash
+            this.previousHash = previousHash
+            this.timeStamp = timeStamp,
+            this.nonce = nonce,
+            this.data = data
+        }
+    }
+    
+    const chain = []
+
 
 */
+import mongoose from 'mongoose'
 import express from 'express'
 import mineRouter from './routes/mine.js'
 
 import dotenv from 'dotenv'
 dotenv.config()
+mongoose.set('strictQuery', false)
 
 const app = express()
 
-app.use('/mine', mineRouter)
+app.use('/', mineRouter)
 
-app.listen(process.env.PORT, () => {
-    console.log('Server running on port ' + process.env.PORT)
+mongoose.connect(process.env.CONNECTION_URL)
+.then(() => {
+    app.listen(process.env.PORT, () => {
+        console.log('Server running on port ' + process.env.PORT)
+    })
 })
+.catch(error => console.log(error))
 

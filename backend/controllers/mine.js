@@ -1,30 +1,54 @@
 import { createHash } from 'crypto'
+import { Block } from '../models/block.js'
 
-export const mine = (req, res) => {
-    class Block {
-        constructor (hash, previousHash, timeStamp, nonce, data) {
-            this.hash = hash
-            this.previousHash = previousHash
-            this.timeStamp = timeStamp,
-            this.nonce = nonce,
-            this.data = data
-        }
+export const mine = async (req, res) => {
+    
+    // const block = new Block('', '', new Date(), 0, 'ciao')
+    // block.timeStamp = new Date()
+
+    let blockchain = []
+
+    try {
+        blockchain = await Block.find()
+    } catch (error) {
+        res.status(404).json({ message: error.message })
     }
-    
-    const chain = []
-    
-    const block = new Block('', '', new Date(), 0, 'ciao')
-    block.timeStamp = new Date()
+
+    const block = {
+        hash: '',
+        previousHash: '',
+        nonce: 0,
+        data: req.body
+    }
     
     do {
         block.hash = createHash('sha256').update(block.hash + block.timeStamp + block.nonce + block.data).digest('hex')
         block.nonce++;
-    } while (block.hash.substring(0, 5) !== '00000');
+    } while (block.hash.substring(0, 5) !== '00000')
     
-    if (chain.lenght > 0) {
-        block.previousHash = chain[chain.length].hash
+    if (blockchain.lenght > 0) {
+        block.previousHash = blockchain[blockchain.length].hash
     }
-    chain.push(block)
-    
-    res.json(chain)
+    blockchain.push(block)
+
+    console.log(blockchain)
+
+    // Save block
+    const newBlock = new Block(block)
+    try {
+        await newBlock.save()
+        res.status(201).json(block)
+    } catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+
+}
+
+export const getBlockchain = async (req, res) => {
+    try {
+        const blockchain = await Block.find()
+        res.status(200).json(blockchain)
+    } catch (error) {
+        res.status(404).json({ message: error.message })
+    }
 }

@@ -1,8 +1,9 @@
 import express from 'express'
-import { mine } from '../controllers/mine.js'
+import { getBlockchain, mine } from '../controllers/mine.js'
 
 const router = express.Router()
 
-router.get('/', mine)
+router.get('/', getBlockchain)
+router.post('/', mine)
 
 export default router
