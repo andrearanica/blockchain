@@ -26,6 +26,7 @@ class Block {
 import mongoose from 'mongoose'
 import express from 'express'
 import mineRouter from './routes/mine.js'
+import authRouter from './routes/auth.js'
 
 import cors from 'cors'
 
@@ -38,6 +39,7 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 app.use('/', mineRouter)
+app.use('/auth', authRouter)
 
 mongoose.connect(process.env.CONNECTION_URL)
 .then(() => {
