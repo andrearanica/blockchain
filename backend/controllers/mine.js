@@ -18,20 +18,23 @@ export const mine = async (req, res) => {
         hash: '',
         previousHash: '',
         nonce: 0,
-        data: req.body
+        data: req.body,
+        timeStamp: new Date()
     }
+
+    
+
+    console.log(blockchain)
     
     do {
         block.hash = createHash('sha256').update(block.hash + block.timeStamp + block.nonce + block.data).digest('hex')
         block.nonce++;
     } while (block.hash.substring(0, 5) !== '00000')
     
-    if (blockchain.lenght > 0) {
-        block.previousHash = blockchain[blockchain.length].hash
+    if (blockchain.length > 0) {
+        block.previousHash = blockchain[blockchain.length - 1].hash
     }
     blockchain.push(block)
-
-    console.log(blockchain)
 
     // Save block
     const newBlock = new Block(block)
