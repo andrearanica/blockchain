@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import { Navbar } from './components/Navbar.js'
+import { Home } from './components/Home.js'
 import { Dashboard } from './components/Dashboard.js'
 import { Login } from './components/Login.js'
 import './App.css'
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         { /*<div className="App"> */}
         { /*ciaomondo*/ }
+        <Route path="/" element={ <Home /> }/>
         <Route path="/login"     element={ <Login /> } />
         <Route path="/dashboard" element={ <Dashboard /> } />
         <Route path="*" element={ <h4 class="container my-5 text-center">⚙️ 404 | Pagina non trovata</h4> } />

@@ -36,3 +36,16 @@
     transform: rotate(360deg);
   }
 }
+
+.card {
+    padding: 100px;
+    border-radius: 25px;
+}
+
+body {
+  background-color: rgb(219, 219, 219)
+}
+
+#home {
+  width: 55%;
+}
