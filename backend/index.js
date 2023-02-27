@@ -27,12 +27,16 @@ import mongoose from 'mongoose'
 import express from 'express'
 import mineRouter from './routes/mine.js'
 
+import cors from 'cors'
+
 import dotenv from 'dotenv'
 dotenv.config()
 mongoose.set('strictQuery', false)
 
 const app = express()
 
+app.use(express.json())
+app.use(cors())
 app.use('/', mineRouter)
 
 mongoose.connect(process.env.CONNECTION_URL)

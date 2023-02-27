@@ -18,13 +18,9 @@ export const mine = async (req, res) => {
         hash: '',
         previousHash: '',
         nonce: 0,
-        data: req.body,
+        data: String(req.body.data),
         timeStamp: new Date()
     }
-
-    
-
-    console.log(blockchain)
     
     do {
         block.hash = createHash('sha256').update(block.hash + block.timeStamp + block.nonce + block.data).digest('hex')
@@ -50,7 +46,25 @@ export const mine = async (req, res) => {
 export const getBlockchain = async (req, res) => {
     try {
         const blockchain = await Block.find()
-        res.status(200).json(blockchain)
+
+       let error = false
+        if (blockchain.length > 1) {
+            error = true
+            blockchain.map(block => {
+                for (let i = 0; i < blockchain.length - 1; i++) {
+                    if (blockchain[i].hash = block.previousHash) {
+                        error = false
+                    }
+                }
+            })
+        }
+        
+
+        if (!error) {
+            res.status(200).json(blockchain)
+        } else {
+            res.status(400).json({ message: 'blockchain not valid' })
+        }
     } catch (error) {
         res.status(404).json({ message: error.message })
     }
