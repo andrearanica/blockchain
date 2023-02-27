@@ -23,12 +23,14 @@ export const login = async (req, res) => {
 
     if (!user) {
         return res.send(404).json({ message: 'bad username' })
+    } else {
+        if (await bcrypt.compare(password, user.password)) {
+            const token = jwt.sign({
+                username: username,
+            }, process.env.JWT_SECRET)
+            return res.status(200).json({ token: token })
+        }
     }
 
-    if (await bcrypt.compare(password, user.password)) {
-        const token = jwt.sign({
-            username: username,
-        }, process.env.JWT_SECRET)
-        return res.status(200).json({ token: token })
-    }
+    
 }
