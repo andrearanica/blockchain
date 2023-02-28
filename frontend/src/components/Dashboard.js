@@ -6,19 +6,24 @@ export function Dashboard () {
     const [blockchain, setBlockchain] = useState([])
     const [newBlockData, setNewBlockData] = useState('')
 
-    useEffect(function getBlockchain () {
-        axios.get(`http://192.168.1.95:8080`)
+    useEffect(() => {
+        axios.get(`http://localhost:8080`, {
+            headers: {
+                Authorization: `${ window.localStorage.getItem('token') }`
+            }
+        })
         .then(res => setBlockchain(res.data))
     }, [blockchain])
 
     function newBlock (e) {
         e.preventDefault()
-        axios.post(`http://192.168.1.95:8080`, {
-            data: {
-                data: newBlockData
+        axios.get(`http://192.168.1.95:8080/newBlock?data=${ newBlockData }`, {
+            headers: {
+                Authorization: `${ window.localStorage.getItem('token') }`
             }
         })
-        .then()
+        .then(res => console.log(res))
+        .catch(res => console.log(res))
     }
     
     return (
@@ -26,18 +31,20 @@ export function Dashboard () {
             <h4>Blockchain</h4>
             <div className="row">
                 { 
+                    blockchain.length > 0 ? 
                     blockchain.map(block => {
-                    return ( 
-                    <div className="card col-lg my-2" style={{ width: "18rem", margin: 'auto' }}>
-                        <div className="card-body">
-                            <h5 className="card-title">Hash: { block.hash }</h5>
-                            <p className="card-text">Data: { block.data }</p>
-                            <p>Previous hash: { block.previousHash }</p>
-                            <p className="btn btn-primary">Tutte le info</p>
+                        return ( 
+                        <div className="card col-lg my-2" style={{ width: "18rem", margin: 'auto' }}>
+                            <div className="card-body">
+                                <h5 className="card-title">Hash: { block.hash }</h5>
+                                <p className="card-text">Data: { block.data }</p>
+                                <p>Previous hash: { block.previousHash }</p>
+                                <p className="btn btn-primary">Tutte le info</p>
+                            </div>
                         </div>
-                    </div>
-                    )
+                        )
                     }) 
+                    : null
                 }
             </div>
             <input onChange={ e => { setNewBlockData(e.target.value); console.log(e.target.value) } } className="form-control my-2" />
