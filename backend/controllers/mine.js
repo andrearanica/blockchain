@@ -1,5 +1,7 @@
+import { User } from '../models/user.js'
 import { createHash } from 'crypto'
 import { Block } from '../models/block.js'
+import jwt from 'jsonwebtoken'
 
 export const mine = async (req, res) => {
     
@@ -18,7 +20,7 @@ export const mine = async (req, res) => {
         hash: '',
         previousHash: '',
         nonce: 0,
-        data: String(req.body.data),
+        data: String(''),
         timeStamp: new Date()
     }
     
@@ -31,6 +33,25 @@ export const mine = async (req, res) => {
         block.previousHash = blockchain[blockchain.length - 1].hash
     }
     blockchain.push(block)
+
+    let username = ''
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+    jwt.verify(token, process.env.JWT_SECRET, (error, user) => {
+        if (error) {
+            return console.log(error)
+        }
+        username = user.username
+    })
+
+    // Pay user
+    try {
+        const userId = await User.findOne({ username: username })
+        console.log(userId._id)
+        const user = await User.findByIdAndUpdate(userId._id, { cost: 8 }, { new: true })
+    } catch (error) {
+        console.log('User not found')
+    }
 
     // Save block
     const newBlock = new Block(block)
