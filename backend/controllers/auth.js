@@ -8,22 +8,25 @@ export const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10)
 
     try {
-        await user.findOne({ username: username })
+        const user = await User.findOne({ username: username })
         if (user) {
             return res.status(400).json({ message: 'username already used' })
+        } else {
+            const user = new User({ username: username, password: hashedPassword, coins: 0 })
+
+            try {
+                await user.save()
+                res.status(201).json({ message: 'OK' })
+            } catch (error) {
+                res.status(400).json({ message: error.message })
+            }
         }
+        
     } catch (error) {
         res.status(400).json({ message: error })
     }
 
-    const user = new User({ username: username, password: hashedPassword })
-
-    try {
-        await user.save()
-        res.status(201).json({ message: 'OK' })
-    } catch (error) {
-        res.status(400).json({ message: error.message })
-    }
+   
 }
 
 export const login = async (req, res) => {

@@ -20,7 +20,7 @@ export const mine = async (req, res) => {
         hash: '',
         previousHash: '',
         nonce: 0,
-        data: String(''),
+        data: req.query.data,
         timeStamp: new Date()
     }
     
@@ -47,8 +47,7 @@ export const mine = async (req, res) => {
     // Pay user
     try {
         const userId = await User.findOne({ username: username })
-        console.log(userId._id)
-        const user = await User.findByIdAndUpdate(userId._id, { cost: 8 }, { new: true })
+        const user = await User.findByIdAndUpdate(userId._id, { coins: userId.coins + 1 }, { new: true })
     } catch (error) {
         console.log('User not found')
     }
@@ -68,24 +67,7 @@ export const getBlockchain = async (req, res) => {
     try {
         const blockchain = await Block.find()
 
-       let error = false
-        if (blockchain.length > 1) {
-            error = true
-            blockchain.map(block => {
-                for (let i = 0; i < blockchain.length - 1; i++) {
-                    if (blockchain[i].hash = block.previousHash) {
-                        error = false
-                    }
-                }
-            })
-        }
-        
-
-        if (!error) {
-            res.status(200).json(blockchain)
-        } else {
-            res.status(400).json({ message: 'blockchain not valid' })
-        }
+        res.status(200).json(blockchain)
     } catch (error) {
         res.status(404).json({ message: error.message })
     }
