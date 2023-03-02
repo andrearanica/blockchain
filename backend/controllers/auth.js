@@ -38,6 +38,7 @@ export const login = async (req, res) => {
     } else {
         if (await bcrypt.compare(password, user.password)) {
             const token = jwt.sign({
+                id: user._id,
                 username: username,
             }, process.env.JWT_SECRET)
             return res.status(200).json({ token: token })

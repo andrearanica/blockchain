@@ -27,6 +27,7 @@ import mongoose from 'mongoose'
 import express from 'express'
 import mineRouter from './routes/mine.js'
 import authRouter from './routes/auth.js'
+import usersRouter from './routes/users.js'
 
 import cors from 'cors'
 
@@ -40,6 +41,7 @@ app.use(express.json())
 app.use(cors())
 app.use('/', mineRouter)
 app.use('/auth', authRouter)
+app.use('/users/', usersRouter)
 
 mongoose.connect(process.env.CONNECTION_URL)
 .then(() => {
