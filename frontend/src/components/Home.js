@@ -7,6 +7,7 @@ export function Home () {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [token, setToken] = useState('')
+    const [showError, setShowError] = useState(false)
 
     if (token !== '') {
         window.localStorage.setItem('token', `Bearer ${ token }`)
@@ -19,7 +20,8 @@ export function Home () {
             username: username,
             password: password
         })
-        .then(res => setToken(res.data.token))
+        .then(res => { setToken(res.data.token) })
+        .catch(setShowError(true))
     }
 
     function register (e) {
@@ -36,11 +38,12 @@ export function Home () {
             { /*<h4 className="my-2">💸 Benvenuto</h4> */ }
             <h4>🏠 Benvenuto</h4>
             <form id="loginForm" className="my-2" onSubmit={ e => e.preventDefault() }>
-                <input className="form-control text-center my-2" id="username" placeholder="username" onChange={ e => setUsername(e.target.value) } />
-                <input className="form-control text-center my-2" type="password" id="password" placeholder="password" onChange={ e => setPassword(e.target.value) } />
+                <input className="form-control text-center my-2" id="username" placeholder="Username" onChange={ e => setUsername(e.target.value) } />
+                <input className="form-control text-center my-2" type="password" id="password" placeholder="Password" onChange={ e => setPassword(e.target.value) } />
                 <input type="submit" className="form-control my-2" value="Login" onClick={ e => login(e) } />
                 <input type="submit" className="form-control my-2" value="Registrati" onClick={ e => register(e) } />
             </form>
+            { showError ? <div className="alert alert-danger text-center my-2">Username o password sbagliati</div> : null }
         </div>
     )
 

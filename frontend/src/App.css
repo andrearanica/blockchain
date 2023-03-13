@@ -41,12 +41,25 @@
     border-radius: 25px;
 }
 
-body {
-  background-color: rgb(219, 219, 219)
-}
-
 #home {
   width: 55%;
   padding: 100px;
   border-radius: 25px;
+}
+
+#button {
+  width: 115px;
+  height: 115px;
+  background-color: white;
+  border-radius: 25px;
+}
+
+body {
+  color: white;  
+  background-color: #000066
+  ;  
+}
+
+.card {
+  color: black;
 }
