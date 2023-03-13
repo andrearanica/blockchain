@@ -1,6 +1,9 @@
 # blockchain
 
-Web app to simulate a fake blockchain made 100% in JavaScript.
+Web app that simulates a fake blockchain made 100% in JavaScript.<br />
+
+The blockchain backend is made in Javascript + Express with MogoDB to store data<br />
+The frontend is made in React
 
 ### :rocket: Functionalities
 - Login and registration
