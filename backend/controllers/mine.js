@@ -52,6 +52,24 @@ export const mine = async (req, res) => {
         console.log('User not found')
     }
 
+    // Check validity
+    try {
+        const blockchain = await Block.find()
+        let valid = true
+        let found = false
+        for (let i = 0; i < blockchain.length - 1; i++) {
+            if (blockchain[i - 1].hash === blockchain[i].previousHash) {
+                found = true
+            }
+            if (!found) {
+                console.log(`Blockchain non valida a id ${ blockchain[i] }`)
+            }
+        }
+        console.log(valid)
+    } catch (error) {
+        console.log(error.message)
+    }
+
     // Save block
     const newBlock = new Block(block)
     try {
@@ -66,9 +84,8 @@ export const mine = async (req, res) => {
 export const getBlockchain = async (req, res) => {
     try {
         const blockchain = await Block.find()
-
         res.status(200).json(blockchain)
     } catch (error) {
-        res.status(404).json({ message: error.message })
+        res.status(400).json(error.message)
     }
 }
