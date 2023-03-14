@@ -53,30 +53,31 @@ export const mine = async (req, res) => {
     }
 
     // Check validity
-    try {
-        const blockchain = await Block.find()
-        let valid = true
+    blockchain.push(block)
+    let valid = true
+    for (let i = 1; i < blockchain.length - 1; i++) {
         let found = false
-        for (let i = 0; i < blockchain.length - 1; i++) {
-            if (blockchain[i - 1].hash === blockchain[i].previousHash) {
+        for (let j = 0; j < blockchain.length - 1; j++) {
+            if (blockchain[i].previousHash === blockchain[j].hash && i !== j) {
                 found = true
             }
-            if (!found) {
-                console.log(`Blockchain non valida a id ${ blockchain[i] }`)
-            }
         }
-        console.log(valid)
-    } catch (error) {
-        console.log(error.message)
+        if (!found) {
+            valid = false
+        }
     }
 
     // Save block
     const newBlock = new Block(block)
-    try {
-        await newBlock.save()
-        res.status(201).json(block)
-    } catch (error) {
-        res.status(400).json({ message: error.message })
+    if (valid) {
+        try {
+            await newBlock.save()
+            res.status(201).json(block)
+        } catch (error) {
+            res.status(400).json({ message: error.message })
+        }
+    } else {
+        return res.status(400).json({ message: 'invalid blockchain' })
     }
 
 }

@@ -8,6 +8,7 @@ export function Home () {
     const [password, setPassword] = useState('')
     const [token, setToken] = useState('')
     const [showError, setShowError] = useState(false)
+    const [successfull, setSuccessfull] = useState(false)
 
     if (token !== '') {
         window.localStorage.setItem('token', `Bearer ${ token }`)
@@ -20,8 +21,8 @@ export function Home () {
             username: username,
             password: password
         })
-        .then(res => { setToken(res.data.token) })
         .catch(setShowError(true))
+        .then((res) => { setShowError(false); setToken(res.data.token); })
     }
 
     function register (e) {
@@ -30,7 +31,8 @@ export function Home () {
             username: username,
             password: password
         })
-        .catch(error => console.log(error))
+        .catch(setSuccessfull(false))
+        .then(setSuccessfull(true))
     }
 
     return (
@@ -43,7 +45,8 @@ export function Home () {
                 <input type="submit" className="form-control my-2" value="Login" onClick={ e => login(e) } />
                 <input type="submit" className="form-control my-2" value="Registrati" onClick={ e => register(e) } />
             </form>
-            { showError ? <div className="alert alert-danger text-center my-2">Username o password sbagliati</div> : null }
+            { showError   ? <div className="alert alert-danger text-center my-2">Username o password sbagliati</div> : null }
+            { successfull ? <div className="alert alert-success text-center my-2">Registrazione effettuata con successo</div> : null }
         </div>
     )
 
