@@ -7,6 +7,7 @@ export function Dashboard () {
     const [newBlockData, setNewBlockData] = useState('')
 
     const [accountInfo, setAccountInfo] = useState({})
+    const [message, setMessage] = useState('')
 
     const [loading, setLoading] = useState(0)
 
@@ -16,21 +17,25 @@ export function Dashboard () {
                 Authorization: `${ window.localStorage.getItem('token') }`
             }
         })
-        .then(res => { setBlockchain(res.data); console.log(blockchain) })
+        .then(res => { setBlockchain(res.data); /*console.log(blockchain)*/ })
         getAccountInfo()
     }, [blockchain])
 
     function newBlock (e) {
         e.preventDefault()
+        if (newBlockData === '') {
+            return
+        }
         setLoading(1)
+        setMessage('')
         setNewBlockData('')
         axios.get(`http://192.168.1.95:8080/newBlock?data=${ newBlockData }`, {
             headers: {
                 Authorization: `${ window.localStorage.getItem('token') }`
             }
         })
-        .then(res => { console.log(res); setLoading(0); })
-        .catch(res => { console.log(res); setLoading(1); } )
+        .then(res => { console.log(res); setLoading(0); setMessage('Blocco aggiunto'); })
+        .catch(res => { console.log('Blockchain'); setLoading(0); setMessage('Blockchain non valida'); } )
     }
 
     function getAccountInfo () {
@@ -52,8 +57,7 @@ export function Dashboard () {
                 { newBlockData !== '' ? <button className="btn" style={{ color: 'white', fontSize: '120%' }} onClick={ e => newBlock(e) }>Crea nuovo blocco</button> : null }
             </form>
             { loading ? <div className="spinner-border text-white my-2" role="status"><span className="visually-hidden">Loading...</span></div> : null }
-            { // <h4 className="my-4">Blockchain ⛓️</h4>
-            }
+            { message === 'Blocco aggiunto' ? <div className="alert alert-success"><b>{ message }</b></div> : message === 'Blockchain non valida' ? <div className="alert alert-danger"><b>{ message }</b></div> : null } 
             <div className="row my-5">    
                 { 
                     blockchain.length > 0 ? 
@@ -73,6 +77,7 @@ export function Dashboard () {
                     : null
                 }
             </div>
+            { /*/ <h4 className="my-4">Blockchain ⛓️</h4> */ }
         </div>
     )
 
