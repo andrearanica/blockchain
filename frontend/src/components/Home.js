@@ -32,7 +32,7 @@ export function Home () {
             password: password
         })
         .catch(setSuccessfull(false))
-        .then(setSuccessfull(true))
+        .then(() => { setSuccessfull(true) })
     }
 
     return (

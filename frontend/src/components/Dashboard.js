@@ -7,7 +7,10 @@ export function Dashboard () {
     const [newBlockData, setNewBlockData] = useState('')
 
     const [accountInfo, setAccountInfo] = useState({})
-    const [message, setMessage] = useState('')
+
+    const [response, setResponse] = useState(0)
+    const [valid, setValid] = useState(true)
+    // 1 OK, 2 invalid
 
     const [loading, setLoading] = useState(0)
 
@@ -27,15 +30,16 @@ export function Dashboard () {
             return
         }
         setLoading(1)
-        setMessage('')
+        setResponse(0)
         setNewBlockData('')
         axios.get(`http://192.168.1.95:8080/newBlock?data=${ newBlockData }`, {
             headers: {
                 Authorization: `${ window.localStorage.getItem('token') }`
             }
         })
-        .then(res => { console.log(res); setLoading(0); setMessage('Blocco aggiunto'); })
-        .catch(res => { console.log('Blockchain'); setLoading(0); setMessage('Blockchain non valida'); } )
+        .then(res => { console.log(res); setLoading(0); setResponse(1); })
+        .catch(res => { console.log(res); setLoading(0); setResponse(2); } )
+        setTimeout(() => { setResponse(0) }, 5000)
     }
 
     function getAccountInfo () {
@@ -51,13 +55,13 @@ export function Dashboard () {
     return (
         <div className="container my-5 text-center">
             <h2>Benvenuto { accountInfo.username }</h2>
-            <h4>Soldi: { accountInfo.coins }🪙</h4>
+            <h4>Portafoglio: { accountInfo.coins }🪙</h4>
             <form onSubmit={ e => newBlock(e) } className="my-5">
-                <input onChange={ e => { setNewBlockData(e.target.value); console.log(e.target.value) } } className="form-control my-2" value={ newBlockData } placeholder="Inserisci i dati" />
+                <input onChange={ e => { setNewBlockData(e.target.value); console.log(e.target.value) } } className="form-control my-2 text-center" value={ newBlockData } placeholder="Inserisci i dati" />
                 { newBlockData !== '' ? <button className="btn" style={{ color: 'white', fontSize: '120%' }} onClick={ e => newBlock(e) }>Crea nuovo blocco</button> : null }
             </form>
             { loading ? <div className="spinner-border text-white my-2" role="status"><span className="visually-hidden">Loading...</span></div> : null }
-            { message === 'Blocco aggiunto' ? <div className="alert alert-success"><b>{ message }</b></div> : message === 'Blockchain non valida' ? <div className="alert alert-danger"><b>{ message }</b></div> : null } 
+            { response === 1 ? <div className="alert alert-success"><b>Blocco aggiunto</b></div> : response === 2 ? <div className="alert alert-danger"><b>Blockchain non valida</b></div> : null }
             <div className="row my-5">    
                 { 
                     blockchain.length > 0 ? 
@@ -74,7 +78,7 @@ export function Dashboard () {
                         </div>
                         )
                     }) 
-                    : null
+                    : <div className="alert alert-success"><b>La blockchain è vuota</b>: inizia minare il primo blocco!</div>
                 }
             </div>
             { /*/ <h4 className="my-4">Blockchain ⛓️</h4> */ }
