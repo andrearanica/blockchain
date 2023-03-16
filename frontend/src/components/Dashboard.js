@@ -8,8 +8,9 @@ export function Dashboard () {
 
     const [accountInfo, setAccountInfo] = useState({})
 
-    const [response, setResponse] = useState(0)
     const [valid, setValid] = useState(true)
+    const [created, setCreated] = useState(false)
+ 
     // 1 OK, 2 invalid
 
     const [loading, setLoading] = useState(0)
@@ -20,7 +21,8 @@ export function Dashboard () {
                 Authorization: `${ window.localStorage.getItem('token') }`
             }
         })
-        .then(res => { setBlockchain(res.data); /*console.log(blockchain)*/ })
+        .then(res => { setBlockchain(res.data); /*console.log(blockchain)*/ setValid(1); })
+        // .catch(res => setValid(0))
         getAccountInfo()
     }, [blockchain])
 
@@ -30,16 +32,16 @@ export function Dashboard () {
             return
         }
         setLoading(1)
-        setResponse(0)
         setNewBlockData('')
         axios.get(`http://192.168.1.95:8080/newBlock?data=${ newBlockData }`, {
             headers: {
                 Authorization: `${ window.localStorage.getItem('token') }`
             }
         })
-        .then(res => { console.log(res); setLoading(0); setResponse(1); })
-        .catch(res => { console.log(res); setLoading(0); setResponse(2); } )
-        setTimeout(() => { setResponse(0) }, 5000)
+        .then(res => { console.log(res); setLoading(0); setCreated(1); setTimeout(() => { setCreated(0) }, 5000); })
+        .catch(res => { console.log(res); setLoading(0); setValid(0); } )
+        /*  */
+        setTimeout(1000)
     }
 
     function getAccountInfo () {
@@ -56,30 +58,30 @@ export function Dashboard () {
         <div className="container my-5 text-center">
             <h2>Benvenuto { accountInfo.username }</h2>
             <h4>Portafoglio: { accountInfo.coins }🪙</h4>
-            <form onSubmit={ e => newBlock(e) } className="my-5">
-                <input onChange={ e => { setNewBlockData(e.target.value); console.log(e.target.value) } } className="form-control my-2 text-center" value={ newBlockData } placeholder="Inserisci i dati" />
-                { newBlockData !== '' ? <button className="btn" style={{ color: 'white', fontSize: '120%' }} onClick={ e => newBlock(e) }>Crea nuovo blocco</button> : null }
-            </form>
+            
+            { console.log(valid) }
+            { valid === 0 ? <div className="alert alert-danger my-5"><b>Blockchain non valida</b></div> : <form onSubmit={ e => newBlock(e) } className="my-5"><input onChange={ e => { setNewBlockData(e.target.value); console.log(e.target.value) } } className="form-control my-2 text-center" value={ newBlockData } placeholder="Inserisci i dati" />{ newBlockData !== '' ? <button className="btn" style={{ color: 'white', fontSize: '120%' }} onClick={ e => newBlock(e) }>Crea nuovo blocco</button> : null }</form> }
+            { created === 1 ? <div className="alert alert-success my-5"><b>Blocco aggiunto</b></div> : null }
             { loading ? <div className="spinner-border text-white my-2" role="status"><span className="visually-hidden">Loading...</span></div> : null }
-            { response === 1 ? <div className="alert alert-success"><b>Blocco aggiunto</b></div> : response === 2 ? <div className="alert alert-danger"><b>Blockchain non valida</b></div> : null }
+            
             <div className="row my-5">    
-                { 
-                    blockchain.length > 0 ? 
-                    blockchain.map(block => {
-                        return ( 
-                        <div className="col">
-                            <div className="card my-2" style={{ width: "18rem", margin: 'auto' }}>
-                                <div className="card-body">
-                                    <h5 className="card-title">Hash { block.hash }</h5>
-                                    <p className="card-text">Data: { block.data }</p>
-                                    { block.previousHash ? <p>Previous hash: { block.previousHash }</p> : <b>Questo è il blocco di partenza </b> }
-                                </div>
+            { 
+                blockchain.length > 0 ? 
+                blockchain.map(block => {
+                    return ( 
+                    <div className="col">
+                        <div className="card my-2" style={{ width: "18rem", margin: 'auto' }}>
+                            <div className="card-body">
+                                <h5 className="card-title">Hash { block.hash }</h5>
+                                <p className="card-text">Data: { block.data }</p>
+                                { block.previousHash ? <p>Previous hash: { block.previousHash }</p> : <b>Questo è il blocco di partenza </b> }
                             </div>
                         </div>
-                        )
-                    }) 
-                    : <div className="alert alert-success"><b>La blockchain è vuota</b>: inizia minare il primo blocco!</div>
-                }
+                    </div>
+                    )
+                }) 
+                : <div className="alert alert-success"><b>La blockchain è vuota</b>: inizia minare il primo blocco!</div>
+            }
             </div>
             { /*/ <h4 className="my-4">Blockchain ⛓️</h4> */ }
         </div>
