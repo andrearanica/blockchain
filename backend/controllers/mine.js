@@ -98,7 +98,7 @@ export const getBlockchain = async (req, res) => {
             }
         }
         if (valid) { 
-            res.status(200).json({ blockchain: blockchain })
+            res.status(200).json({ blockchain: blockchain, valid: valid })
         } else {
             res.status(200).json({ blockchain: blockchain, valid: valid })
         }

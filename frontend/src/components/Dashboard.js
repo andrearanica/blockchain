@@ -25,7 +25,9 @@ export function Dashboard () {
             setBlockchain(res.data.blockchain); console.log(blockchain); setValid(1); 
             if (!res.data.valid) {
                 setValid(0)
-            } 
+            } else {
+                setValid(1)
+            }
         })
         .catch(res => setValid(0))
         getAccountInfo()
