@@ -21,7 +21,12 @@ export function Dashboard () {
                 Authorization: `${ window.localStorage.getItem('token') }`
             }
         })
-        .then(res => { setBlockchain(res.data); /*console.log(blockchain)*/ setValid(1); })
+        .then(res => { 
+            setBlockchain(res.data.blockchain); console.log(blockchain); setValid(1); 
+            if (!res.data.valid) {
+                setValid(0)
+            } 
+        })
         .catch(res => setValid(0))
         getAccountInfo()
     }, [blockchain])
@@ -33,9 +38,15 @@ export function Dashboard () {
         }
         setLoading(1)
         setNewBlockData('')
-        axios.get(`http://192.168.1.95:8080/blockchain/newBlock?data=${ newBlockData }`, {
+
+        axios({
+            method: 'post',
+            url: 'http://localhost:8080/blockchain',
             headers: {
-                Authorization: `${ window.localStorage.getItem('token') }`
+                'Authorization': window.localStorage.getItem('token')
+            },
+            data: {
+                data: newBlockData
             }
         })
         .then(res => { console.log(res); setLoading(0); setCreated(1); setTimeout(() => { setCreated(0) }, 5000); })
@@ -58,7 +69,7 @@ export function Dashboard () {
             <h2>Benvenuto { accountInfo.username }</h2>
             <h4>Portafoglio: { accountInfo.coins }🪙</h4>
             
-            { console.log(valid) }
+            { /* console.log(valid) */ }
             { valid === 0 ? <div className="alert alert-danger my-5"><b>Blockchain non valida</b></div> : <form onSubmit={ e => newBlock(e) } className="my-5"><input onChange={ e => { setNewBlockData(e.target.value); console.log(e.target.value) } } className="form-control my-2 text-center" value={ newBlockData } placeholder="Inserisci i dati" />{ newBlockData !== '' ? <button className="btn" style={{ color: 'white', fontSize: '120%' }} onClick={ e => newBlock(e) }>Crea nuovo blocco</button> : null }</form> }
             { created === 1 ? <div className="alert alert-success my-5"><b>Blocco aggiunto</b></div> : null }
             { loading ? <div className="spinner-border text-white my-2" role="status"><span className="visually-hidden">Loading...</span></div> : null }
