@@ -39,8 +39,8 @@ const app = express()
 
 app.use(express.json())
 app.use(cors())
-app.use('/', mineRouter)
-app.use('/auth', authRouter)
+app.use('/blockchain/', mineRouter)
+app.use('/auth/', authRouter)
 app.use('/users/', usersRouter)
 
 mongoose.connect(process.env.CONNECTION_URL)

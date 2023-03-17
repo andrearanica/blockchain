@@ -5,6 +5,6 @@ import { authenticateToken } from '../middlewares/auth.js'
 const router = express.Router()
 
 router.get('/', authenticateToken, getBlockchain)
-router.get('/newBlock', authenticateToken, mine)
+router.post('/', authenticateToken, mine)
 
 export default router

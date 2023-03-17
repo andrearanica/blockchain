@@ -20,7 +20,7 @@ export const mine = async (req, res) => {
         hash: '',
         previousHash: '',
         nonce: 0,
-        data: req.query.data,
+        data: req.body.data,
         timeStamp: new Date()
     }
     
@@ -66,6 +66,8 @@ export const mine = async (req, res) => {
         }
     }
 
+    console.log(block)
+
     // Save block
     const newBlock = new Block(block)
     if (valid) {
@@ -86,9 +88,9 @@ export const getBlockchain = async (req, res) => {
         const blockchain = await Block.find()
         // Check validity
         let valid = true
-        for (let i = 1; i < blockchain.length - 1; i++) {
+        for (let i = 1; i < blockchain.length; i++) {
             let found = false
-            for (let j = 0; j < blockchain.length - 1; j++) {
+            for (let j = 0; j < blockchain.length; j++) {
                 if (blockchain[i].previousHash === blockchain[j].hash && i !== j) {
                     found = true
                 }
