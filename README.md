@@ -8,7 +8,7 @@ The frontend is made in React
 ### :rocket: Functionalities
 - Login and registration
 - Show all blocks
-- Mine new blocks (with PoW algorithm)
+- Mine new blocks
 - Earn money
 
 ### ⚙️ Endpoints
@@ -20,7 +20,8 @@ The frontend is made in React
 | POST   | /blockchain    | Add new block                  | 
 | GET    | /users         | Get account info               | 
 
-For every request (except login and signup) require a jwt token
+For every request (except login and signup) you need a jwt token<br />
+The jwt token is returned by the ```/auth/login``` endpoint and it should be put int the ```Authorization``` header
 
 ### ❤️ Credits 
 <a href="https://www.flaticon.com/free-icons/more" title="more icons">More icons created by Freepik - Flaticon</a>
