@@ -66,8 +66,6 @@ export const mine = async (req, res) => {
         }
     }
 
-    console.log(block)
-
     // Save block
     const newBlock = new Block(block)
     if (valid) {
@@ -100,9 +98,9 @@ export const getBlockchain = async (req, res) => {
             }
         }
         if (valid) { 
-            res.status(200).json(blockchain)
+            res.status(200).json({ blockchain: blockchain })
         } else {
-            res.status(400).json({ message: 'invalid blockchain' })
+            res.status(200).json({ blockchain: blockchain, valid: valid })
         }
        
     } catch (error) {
