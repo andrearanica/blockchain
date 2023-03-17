@@ -8,7 +8,7 @@ The frontend is made in React
 ### :rocket: Functionalities
 - Login and registration
 - Show all blocks
-- Mine new blocks
+- Mine new blocks (with PoW algorithm)
 - Earn money
 
 ### ❤️ Credits 
