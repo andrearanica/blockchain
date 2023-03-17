@@ -16,13 +16,13 @@ export function Dashboard () {
     const [loading, setLoading] = useState(0)
 
     useEffect(() => {
-        axios.get(`http://localhost:8080`, {
+        axios.get(`http://localhost:8080/blockchain`, {
             headers: {
                 Authorization: `${ window.localStorage.getItem('token') }`
             }
         })
         .then(res => { setBlockchain(res.data); /*console.log(blockchain)*/ setValid(1); })
-        // .catch(res => setValid(0))
+        .catch(res => setValid(0))
         getAccountInfo()
     }, [blockchain])
 
@@ -33,7 +33,7 @@ export function Dashboard () {
         }
         setLoading(1)
         setNewBlockData('')
-        axios.get(`http://192.168.1.95:8080/newBlock?data=${ newBlockData }`, {
+        axios.get(`http://192.168.1.95:8080/blockchain/newBlock?data=${ newBlockData }`, {
             headers: {
                 Authorization: `${ window.localStorage.getItem('token') }`
             }
@@ -41,7 +41,6 @@ export function Dashboard () {
         .then(res => { console.log(res); setLoading(0); setCreated(1); setTimeout(() => { setCreated(0) }, 5000); })
         .catch(res => { console.log(res); setLoading(0); setValid(0); } )
         /*  */
-        setTimeout(1000)
     }
 
     function getAccountInfo () {
